@@ -38,7 +38,7 @@ jobs:
         run: npm run test -- --watch=false --browsers ChromeHeadless --code-coverage
 
       - name: Sonarqube scan
-        uses: SonarSource/sonarqube-scan-action@v2
+        uses: SonarSource/sonarqube-scan-action@v5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
