@@ -1,0 +1,47 @@
+name: CI Angular avec Sonarqube
+
+on:
+  push:
+    tags:
+      - v1*
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Installer les dependences
+        run: npm install
+
+      - name: Angular lint (.ts)
+        run: npm run lint
+
+      - name: HTML lint (.html)
+        run: npx htmlhint '**/*.html'
+
+      - name: CSS lint (.css)
+        run: npx stylelint '**/*.css'
+
+      - name: Lancement des test + coverage
+        run: npm run test -- --watch=false --browsers ChromeHeadless --code-coverage
+
+      - name: Sonarqube scan
+        uses: SonarSource/sonarqube-scan-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+      - name: SonarQube Quality Gate
+        uses: SonarSource/sonarqube-quality-gate-action@v1
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
