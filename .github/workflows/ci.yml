@@ -2,11 +2,9 @@ name: CI Angular avec Sonarqube
 
 on:
   push:
-    branches:
-      - main
-
-    tags:
-      - v1*
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   build:
